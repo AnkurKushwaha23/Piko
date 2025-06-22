@@ -38,7 +38,7 @@ Piko is a lightweight, minimal image loading library for Android inspired by Gli
 
 ## 📦 Installation
 
-Step 1. Add the JitPack repository to your build file 
+- Step 1. Add the JitPack repository to your build file 
 
 Add it in your `settings.gradle.kts` at the end of repositories:
 
@@ -51,7 +51,7 @@ dependencyResolutionManagement {
 		}
 	}
 ```
-Step 2. Add the Piko dependency to your app-level `build.gradle` :
+- Step 2. Add the Piko dependency to your app-level `build.gradle` :
 
 ```
 	dependencies {
@@ -68,7 +68,7 @@ Step 2. Add the Piko dependency to your app-level `build.gradle` :
     .load("https://example.com/image.jpg")
     .into(imageView)
 ```
--With Placeholder and Error
+- With Placeholder and Error
 
 ```
   Piko.with(context)
