@@ -46,8 +46,9 @@ Add it in your `settings.gradle.kts` at the end of repositories:
 dependencyResolutionManagement {
 		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 		repositories {
+                        google()
 			mavenCentral()
-			maven { url = uri("https://jitpack.io") }
+			maven { url = uri("https://jitpack.io") } //add this line
 		}
 	}
 ```
