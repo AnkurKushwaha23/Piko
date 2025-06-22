@@ -44,20 +44,20 @@ Add it in your `settings.gradle.kts` at the end of repositories:
 
 ```gradle.kts
 dependencyResolutionManagement {
-		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-		repositories {
-                        google()
-			mavenCentral()
-			maven { url = uri("https://jitpack.io") } //add this line
-		}
-	}
+   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+   repositories {
+       google()
+       mavenCentral()
+       maven { url = uri("https://jitpack.io") } //add this line
+   }
+}
 ```
 - Step 2. Add the Piko dependency to your app-level `build.gradle` :
 
 ```
-	dependencies {
-	        implementation("com.github.AnkurKushwaha23:Piko:Tag")
-	}
+dependencies {
+   implementation("com.github.AnkurKushwaha23:Piko:Tag")
+}
 ```
 
 ## 🔧 Usage
