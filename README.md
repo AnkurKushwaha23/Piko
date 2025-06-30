@@ -1,6 +1,9 @@
-# 🖼️ Piko
+# 🖼️ Piko  
+
 
 Piko is a lightweight, minimal image loading library for Android inspired by Glide and Picasso. It helps you load images efficiently into your `ImageView` with support for caching, placeholders.
+
+ ![Version](https://img.shields.io/github/v/tag/AnkurKushwaha23/Piko?label=version)
 
 ---
 
@@ -56,7 +59,7 @@ dependencyResolutionManagement {
 
 ```
 dependencies {
-   implementation("com.github.AnkurKushwaha23:Piko:Tag")
+   implementation("com.github.AnkurKushwaha23:Piko:1.0.0")
 }
 ```
 
