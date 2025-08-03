@@ -55,7 +55,7 @@ publishing {
                 from(components["release"])
                 groupId = "com.github.ankurkushwaha23"
                 artifactId = "piko"
-                version = "1.0.1"
+                version = "1.0.2"
             }
         }
     }
