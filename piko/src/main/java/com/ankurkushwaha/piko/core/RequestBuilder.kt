@@ -75,8 +75,11 @@ class RequestBuilder(
     }
 
     fun into(imageView: ImageView) {
-        placeholderRes?.let { imageView.setImageResource(it) }
-        contentDesc?.let { imageView.contentDescription = it }
+        if (useShimmer) {
+            imageView.setImageDrawable(createShimmerDrawable())
+        } else {
+            placeholderRes?.let { imageView.setImageResource(it) }
+        }
 
         val dispatcher = RequestDispatcher(
             context = context,
