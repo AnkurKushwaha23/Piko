@@ -1,6 +1,8 @@
 package com.ankurkushwaha.piko.engine
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import com.ankurkushwaha.piko.R
@@ -83,6 +85,53 @@ class RequestDispatcher(
             } else {
                 withContext(Dispatchers.Main) {
                     listener?.onLoadFailed(Exception("Failed to download or decode image"))
+                    errorRes?.let { imageView.setImageResource(it) }
+                }
+            }
+        }
+    }
+
+    fun load(uri: Uri) {
+        val key = uri.toString().hash()
+        imageView.setTag(R.id.piko_tag_url, uri.toString())
+
+        // Check memory cache first
+        MemoryCache.get(key)?.let {
+            val currentTag = imageView.getTag(R.id.piko_tag_url) as? String
+            if (currentTag == uri.toString()) {
+                listener?.onResourceReady(it)
+                imageView.setImageBitmap(it)
+            }
+            return
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
+
+                if (bitmap != null) {
+                    val transformed = scaleType?.let { transform(bitmap, imageView, it) } ?: bitmap
+                    MemoryCache.put(key, transformed)
+
+                    withContext(Dispatchers.Main) {
+                        val currentTag = imageView.getTag(R.id.piko_tag_url) as? String
+                        if (currentTag == uri.toString()) {
+                            listener?.onResourceReady(transformed)
+                            imageView.setImageBitmap(transformed)
+                        }
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        listener?.onLoadFailed(Exception("Failed to decode bitmap from URI"))
+                        errorRes?.let { imageView.setImageResource(it) }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    listener?.onLoadFailed(e)
                     errorRes?.let { imageView.setImageResource(it) }
                 }
             }

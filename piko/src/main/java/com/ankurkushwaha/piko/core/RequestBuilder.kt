@@ -1,11 +1,17 @@
 package com.ankurkushwaha.piko.core
 
 import android.content.Context
+import android.graphics.Color
+import android.net.Uri
 import android.widget.ImageView
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.graphics.toColorInt
 import com.ankurkushwaha.piko.engine.RequestDispatcher
 import com.ankurkushwaha.piko.listener.RequestListener
 import com.ankurkushwaha.piko.transformation.ScaleType
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
 
 /**
  * @author Ankur Kushwaha
@@ -14,13 +20,20 @@ import com.ankurkushwaha.piko.transformation.ScaleType
 
 class RequestBuilder(
     private val context: Context,
-    private val url: String
+    private val url: String? = null,
+    private val uri: Uri? = null
 ) {
     private var placeholderRes: Int? = null
     private var errorRes: Int? = null
     private var contentDesc: String? = null
     private var requestListener: RequestListener? = null
     private var scaleType: ScaleType? = null
+
+    private var useShimmer: Boolean = false
+    private var shimmerBackgroundColor: Int = Color.LTGRAY
+    private var shimmerForegroundColor: Int = Color.LTGRAY
+    private var shimmerDirection : Int = Shimmer.Direction.LEFT_TO_RIGHT
+    private var shimmerDuration : Long = 1000
 
     fun description(contentDesc: String): RequestBuilder {
         this.contentDesc = contentDesc
@@ -47,17 +60,50 @@ class RequestBuilder(
     fun centerInside() = apply { scaleType = ScaleType.CENTER_INSIDE }
     fun circleCrop() = apply { scaleType = ScaleType.CIRCLE_CROP }
 
+    fun showShimmer(
+        @ColorInt foregroundColor: Int = Color.LTGRAY,
+        @ColorInt backgroundColor: Int = "#E0E0E0".toColorInt(),
+        shimmerDirection : Int = Shimmer.Direction.LEFT_TO_RIGHT,
+        shimmerDuration : Long = 1000
+    ): RequestBuilder {
+        this.useShimmer = true
+        this.shimmerForegroundColor = foregroundColor
+        this.shimmerBackgroundColor = backgroundColor
+        this.shimmerDirection = shimmerDirection
+        this.shimmerDuration = shimmerDuration
+        return this
+    }
+
     fun into(imageView: ImageView) {
         placeholderRes?.let { imageView.setImageResource(it) }
         contentDesc?.let { imageView.contentDescription = it }
 
-        RequestDispatcher(
+        val dispatcher = RequestDispatcher(
             context = context,
             imageView = imageView,
             placeholderRes = placeholderRes,
             errorRes = errorRes,
             listener = requestListener,
             scaleType = scaleType
-        ).load(url)
+        )
+
+        when {
+            url != null -> dispatcher.load(url)
+            uri != null -> dispatcher.load(uri)
+            else -> throw IllegalArgumentException("Image source must not be null")
+        }
+    }
+
+    private fun createShimmerDrawable(): ShimmerDrawable {
+        val shimmer = Shimmer.ColorHighlightBuilder()
+            .setBaseColor(shimmerBackgroundColor)
+            .setHighlightColor(shimmerForegroundColor)
+            .setDirection(shimmerDirection)
+            .setDuration(shimmerDuration)
+            .build()
+
+        return ShimmerDrawable().apply {
+            setShimmer(shimmer)
+        }
     }
 }

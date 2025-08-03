@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.disklrucache)
+
+    implementation(libs.shimmer)
 }
 
 publishing {
@@ -53,7 +55,7 @@ publishing {
                 from(components["release"])
                 groupId = "com.github.ankurkushwaha23"
                 artifactId = "piko"
-                version = "1.0.0"
+                version = "1.0.1"
             }
         }
     }
